@@ -1,0 +1,36 @@
+# ── Maven 构建产物 ─────────────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── 编译产物 ───────────────────────────────────────────────────
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ── 日志 ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── 本地配置（含密码，不提交） ─────────────────────────────────
+src/main/resources/application-local.yml
+src/main/resources/application-local.yaml
+
+# ── IDE ───────────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# ── macOS ─────────────────────────────────────────────────────
+.DS_Store
+
+# ── 测试覆盖率报告 ─────────────────────────────────────────────
+/surefire-reports/
+/jacoco.exec

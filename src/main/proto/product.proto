@@ -1,0 +1,48 @@
+syntax = "proto3";
+package ecommerce;
+option java_package = "com.ecommerce.grpc.proto";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+service ProductService {
+  rpc ListProducts(ListProductsReq) returns (ListProductsResp);
+  rpc GetProduct(GetProductReq) returns (GrpcProductDetail);
+  rpc ListCategories(google.protobuf.Empty) returns (ListCategoriesResp);
+}
+
+message ListProductsReq {
+  int64 category_id = 1;
+  string keyword = 2;
+  int32 page = 3;
+  int32 size = 4;
+}
+message ListProductsResp {
+  repeated GrpcProductItem products = 1;
+  int64 total = 2;
+}
+message GrpcProductItem {
+  int64 id = 1;
+  string name = 2;
+  string price = 3;
+  string main_image = 4;
+  int64 category_id = 5;
+  string status = 6;
+}
+message GetProductReq { int64 product_id = 1; }
+message GrpcProductDetail {
+  int64 id = 1;
+  string name = 2;
+  string price = 3;
+  string description = 4;
+  repeated string images = 5;
+  int64 category_id = 6;
+  string status = 7;
+}
+message ListCategoriesResp { repeated GrpcCategoryItem categories = 1; }
+message GrpcCategoryItem {
+  int64 id = 1;
+  string name = 2;
+  int64 parent_id = 3;
+  repeated GrpcCategoryItem children = 4;
+}

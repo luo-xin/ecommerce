@@ -1,0 +1,26 @@
+syntax = "proto3";
+package ecommerce;
+option java_package = "com.ecommerce.grpc.proto";
+option java_multiple_files = true;
+
+service InventoryService {
+  rpc GetStock(GrpcGetStockReq) returns (GrpcStockResp);
+  rpc Restock(GrpcRestockReq) returns (GrpcRestockResp);
+  rpc GetInventoryLogs(GrpcGetLogsReq) returns (GrpcInventoryLogsResp);
+}
+
+message GrpcGetStockReq { int64 product_id = 1; }
+message GrpcStockResp { int64 product_id = 1; int32 available = 2; }
+message GrpcRestockReq { int64 product_id = 1; int32 quantity = 2; string remark = 3; }
+message GrpcRestockResp { int32 before_stock = 1; int32 after_stock = 2; }
+message GrpcGetLogsReq { int64 product_id = 1; int32 page = 2; int32 size = 3; }
+message GrpcInventoryLogsResp {
+  repeated GrpcInventoryLogItem logs = 1;
+  int64 total = 2;
+}
+message GrpcInventoryLogItem {
+  int64 id = 1;
+  string change_type = 2;
+  int32 change_quantity = 3;
+  string created_at = 4;
+}

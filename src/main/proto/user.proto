@@ -1,0 +1,46 @@
+syntax = "proto3";
+package ecommerce;
+option java_package = "com.ecommerce.grpc.proto";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+service UserService {
+  rpc Register(GrpcRegisterReq) returns (GrpcRegisterResp);
+  rpc Login(GrpcLoginReq) returns (GrpcLoginResp);
+  rpc GetProfile(google.protobuf.Empty) returns (GrpcUserInfo);
+  rpc ListAddresses(google.protobuf.Empty) returns (GrpcAddressListResp);
+  rpc AddAddress(GrpcAddressReq) returns (GrpcAddressResp);
+  rpc DeleteAddress(GrpcDeleteAddressReq) returns (google.protobuf.Empty);
+}
+
+message GrpcRegisterReq {
+  string phone = 1;
+  string password = 2;
+  string username = 3;
+}
+message GrpcRegisterResp { int64 user_id = 1; }
+message GrpcLoginReq { string phone = 1; string password = 2; }
+message GrpcLoginResp { string token = 1; int64 user_id = 2; string role = 3; }
+message GrpcUserInfo { int64 id = 1; string phone = 2; string username = 3; string role = 4; }
+message GrpcAddressReq {
+  string receiver_name = 1;
+  string receiver_phone = 2;
+  string province = 3;
+  string city = 4;
+  string district = 5;
+  string detail = 6;
+  bool is_default = 7;
+}
+message GrpcAddressResp {
+  int64 id = 1;
+  string receiver_name = 2;
+  string receiver_phone = 3;
+  string province = 4;
+  string city = 5;
+  string district = 6;
+  string detail = 7;
+  bool is_default = 8;
+}
+message GrpcAddressListResp { repeated GrpcAddressResp addresses = 1; }
+message GrpcDeleteAddressReq { int64 address_id = 1; }

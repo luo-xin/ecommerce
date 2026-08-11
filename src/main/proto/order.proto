@@ -1,0 +1,61 @@
+syntax = "proto3";
+package ecommerce;
+option java_package = "com.ecommerce.grpc.proto";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+
+service OrderService {
+  rpc CreateOrder(GrpcCreateOrderReq) returns (GrpcCreateOrderResp);
+  rpc ListOrders(GrpcListOrdersReq) returns (GrpcListOrdersResp);
+  rpc GetOrder(GrpcGetOrderReq) returns (GrpcOrderDetail);
+  rpc PayOrder(GrpcPayOrderReq) returns (google.protobuf.Empty);
+  rpc CancelOrder(GrpcCancelOrderReq) returns (google.protobuf.Empty);
+}
+
+// 注意：每个商品的数量来自购物车，这里只传 product_ids（与 HTTP CreateOrderReq 一致）
+message GrpcCreateOrderReq {
+  int64 address_id = 1;
+  repeated int64 product_ids = 2;
+}
+message GrpcCreateOrderResp {
+  int64 order_id = 1;
+  string order_no = 2;
+}
+message GrpcListOrdersReq {
+  int32 page = 1;
+  int32 size = 2;
+  string status = 3;
+}
+message GrpcListOrdersResp {
+  repeated GrpcOrderSummary orders = 1;
+  int64 total = 2;
+}
+message GrpcOrderSummary {
+  int64 id = 1;
+  string order_no = 2;
+  string status = 3;
+  string total_amount = 4;
+  string first_product_name = 5;
+  string first_product_main_image = 6;
+  string created_at = 7;
+}
+message GrpcGetOrderReq { int64 order_id = 1; }
+message GrpcOrderDetail {
+  int64 id = 1;
+  string order_no = 2;
+  string status = 3;
+  string total_amount = 4;
+  repeated GrpcOrderItemDetail items = 5;
+  string address_snapshot = 6;
+  string created_at = 7;
+}
+message GrpcOrderItemDetail {
+  int64 product_id = 1;
+  string product_name = 2;
+  string price = 3;
+  int32 quantity = 4;
+  string main_image = 5;
+}
+message GrpcPayOrderReq { int64 order_id = 1; }
+message GrpcCancelOrderReq { int64 order_id = 1; string reason = 2; }
