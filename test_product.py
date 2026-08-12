@@ -1,7 +1,7 @@
 from __future__ import annotations
 import requests
 
-BASE_URL = "http://127.0.0.1:8082"
+from conftest import BASE_URL
 
 
 def test_list_products(client):

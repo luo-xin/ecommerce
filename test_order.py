@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-BASE_URL = "http://127.0.0.1:8082"
+from conftest import BASE_URL
 
 
 def test_create_order(client, product_id):
