@@ -34,3 +34,9 @@ src/main/resources/application-local.yaml
 # ── 测试覆盖率报告 ─────────────────────────────────────────────
 /surefire-reports/
 /jacoco.exec
+
+# pytest artifacts
+allure-results/
+junit-report.xml
+.pytest_cache/
+__pycache__/
