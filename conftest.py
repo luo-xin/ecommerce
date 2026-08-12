@@ -1,8 +1,9 @@
 from __future__ import annotations
+import os
 import pytest
 import requests
 
-BASE_URL = "http://127.0.0.1:8082"
+BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8082")
 
 
 @pytest.fixture(scope="session")

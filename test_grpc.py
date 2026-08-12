@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 import grpc
 import pytest
 
@@ -9,7 +10,7 @@ import pytest
 def _get_product_stub() -> tuple:
     """Create gRPC channel to product service. Returns (stub, channel) or raises skip."""
     try:
-        channel = grpc.insecure_channel("127.0.0.1:19090")
+        channel = grpc.insecure_channel(os.environ.get("GRPC_HOST", "127.0.0.1:19090"))
         # Try a quick connectivity check
         grpc.channel_ready_future(channel).result(timeout=3)
     except Exception:
@@ -24,7 +25,7 @@ def _get_product_stub() -> tuple:
 def _get_inventory_stub() -> tuple:
     """Create gRPC channel to inventory service."""
     try:
-        channel = grpc.insecure_channel("127.0.0.1:19090")
+        channel = grpc.insecure_channel(os.environ.get("GRPC_HOST", "127.0.0.1:19090"))
         grpc.channel_ready_future(channel).result(timeout=3)
     except Exception:
         pytest.skip("gRPC server not reachable")
