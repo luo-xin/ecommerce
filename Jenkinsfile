@@ -12,8 +12,8 @@ pipeline {
                 // -p ecommerce 统一项目名（与宿主手动启动一致），先 down 避免容器名冲突
                 sh 'docker compose -p ecommerce down --remove-orphans || true'
                 sh 'docker compose -p ecommerce up -d --build --force-recreate'
-                // 端口探测等待就绪（dash 不支持 /dev/tcp，bash 可用）
-                sh 'bash -c "until (exec 3<>/dev/tcp/host.docker.internal/8082) 2>/dev/null; do sleep 2; done"'
+                // 应用就绪等待：TCP 端口通时 Spring 可能仍在初始化（Hikari/Redis），轮询登录接口到 200
+                sh 'bash -c "until curl -sf -X POST http://host.docker.internal:8082/api/internal/test/login-as?userId=1 >/dev/null 2>&1; do sleep 3; done"'
             }
         }
         stage('Test') {
