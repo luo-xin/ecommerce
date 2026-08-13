@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./sql/demo_data.sql:/docker-entrypoint-initdb.d/02-demo-data.sql:ro
+    ports:
+      - "3307:3306"     # 宿主 3306 被本机 MySQL 占用；测试容器直连用 host.docker.internal:3307
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  ecommerce:
+    build: .
+    container_name: ecommerce
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev                # @Profile({"dev","test"}) 才注册 test-backdoor 控制器
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/ecommerce_demo?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_REDIS_HOST: host.docker.internal   # Redis 在宿主 6379
+      ECOMMERCE_TESTBACKDOOR_ENABLED: "true"         # relaxed binding: ecommerce.test-backdoor.enabled
+    ports:
+      - "8082:8082"
+      - "19090:19090"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8082 && exec 3>&- || exit 1'"]  # 显式 bash：dash 不支持 /dev/tcp
+      interval: 5s
+      timeout: 3s
+      retries: 40
