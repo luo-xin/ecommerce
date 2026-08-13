@@ -9,7 +9,9 @@ pipeline {
     stages {
         stage('Deploy') {
             steps {
-                sh 'docker compose up -d --build --force-recreate'
+                // -p ecommerce 统一项目名（与宿主手动启动一致），先 down 避免容器名冲突
+                sh 'docker compose -p ecommerce down --remove-orphans || true'
+                sh 'docker compose -p ecommerce up -d --build --force-recreate'
                 // 端口探测等待就绪（dash 不支持 /dev/tcp，bash 可用）
                 sh 'bash -c "until (exec 3<>/dev/tcp/host.docker.internal/8082) 2>/dev/null; do sleep 2; done"'
             }
