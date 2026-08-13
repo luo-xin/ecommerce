@@ -36,7 +36,15 @@ pipeline {
         }
         stage('Report') {
             steps {
-                allure includeProperties: false, jdk: '', report: "/allure_reports/${env.EXECUTION_ID}"
+                // 平台产出已渲染的 Allure HTML；HTML Publisher 发布（Allure 插件 2.35+ 需 raw results，平台零改动约束下不可用）
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: "/allure_reports/${env.EXECUTION_ID}",
+                    reportFiles: 'index.html',
+                    reportName: 'Allure 测试报告'
+                ])
             }
         }
     }
