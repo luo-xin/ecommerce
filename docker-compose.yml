@@ -1,13 +1,12 @@
 services:
   mysql:
-    image: mysql:8.0
+    build: ./mysql-init          # SQL 打镜像（Jenkins 容器场景 bind mount 源不可达 daemon）
     container_name: ecommerce-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Shanghai
     volumes:
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
-      - ./sql/demo_data.sql:/docker-entrypoint-initdb.d/02-demo-data.sql:ro
+      - ecommerce-mysql-data:/var/lib/mysql   # 命名卷：down 不删数据，仅首次初始化
     ports:
       - "3307:3306"     # 宿主 3306 被本机 MySQL 占用；测试容器直连用 host.docker.internal:3307
     healthcheck:
@@ -37,3 +36,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 40
+
+volumes:
+  ecommerce-mysql-data:
