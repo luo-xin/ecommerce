@@ -261,3 +261,4 @@ src/main/java/com/ecommerce/
 
 src/main/proto/   Protobuf 定义文件（6 个服务）
 ```
+# ci: poll scm smoke
